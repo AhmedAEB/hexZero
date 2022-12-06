@@ -84,7 +84,7 @@ class Board():
         try:
             assert self[x][y] == 0
         except AssertionError:
-            print(move, color, self.pieces)
+            print(move, nextPiece, self.pieces)
             raise AssertionError
         self[x][y] = nextPiece
         # self.legal_moves.remove(move)
