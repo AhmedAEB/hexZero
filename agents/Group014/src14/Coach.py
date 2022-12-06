@@ -8,8 +8,8 @@ from random import shuffle
 import numpy as np
 from tqdm import tqdm
 
-from Arena import Arena
-from MCTS import MCTS
+from src14.Arena import Arena
+from src.MCTS import MCTS
 
 log = logging.getLogger(__name__)
 

@@ -4,7 +4,7 @@ import sys
 sys.path.append('..')
 
 import argparse
-from NNModel import NNModel as onnet
+from src14.NNModel import NNModel as onnet
 
 args = {
     'lr': 0.001,

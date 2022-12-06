@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys
 sys.path.append('..')
-from Board import Board
+from src14.Board import Board
 import numpy as np
 
 I_DISPLACEMENTS = [-1, -1, 0, 1, 1, 0]

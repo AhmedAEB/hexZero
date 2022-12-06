@@ -2,9 +2,9 @@ import logging
 
 import coloredlogs
 
-from Coach import Coach
-from Game import Game
-from NeuralNet import NeuralNet as nn
+from src14.Coach import Coach
+from src14.Game import Game
+from src14.NeuralNet import NeuralNet as nn
 
 log = logging.getLogger(__name__)
 # Set the logging level

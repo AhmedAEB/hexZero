@@ -1,7 +1,7 @@
 import Arena
-from MCTS import MCTS
-from Game import Game
-from NeuralNet import NeuralNet as NNet
+from src14.MCTS import MCTS
+from src14.Game import Game
+from src14.NeuralNet import NeuralNet as NNet
 
 import numpy as np
 
