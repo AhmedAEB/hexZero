@@ -89,12 +89,12 @@ class AlphaZeroAgent():
         """Makes a random valid move. It will choose to swap with
         a coinflip.
         """
-        board = self._game.getCanonicalForm(self._board, self._curPlayer)
+        self._board = self._game.getCanonicalForm(self._board, self._curPlayer)
         
         action = np.argmax(self._MCTS.getActionProb(board, temp=0))
         valids = self._game.getValidMoves(self._board, 1)
         
-        board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
+        self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
         
         if (action == self._board_size ** 2):
             msg = "SWAP\n"
