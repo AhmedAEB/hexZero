@@ -22,6 +22,8 @@ class AlphaZeroAgent():
         and sending moves.
         """
         
+        self._args = {'numMCTSSims': 50, 'cpuct':1.0}
+        
         self._board_size = 0
         self._colour = ""
         self._turn_count = 1
@@ -71,7 +73,7 @@ class AlphaZeroAgent():
             self._game = Game(self._board_size)
             self._board = self._game.getInitBoard()
             self._NN = NNet(self._game)
-            self._MCTS = MCTS(self._game, self._NN, 1)
+            self._MCTS = MCTS(self._game, self._NN, 1, self._args)
             self._curPlayer = 1
 
             if (self._colour == "R"):
