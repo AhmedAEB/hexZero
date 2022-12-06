@@ -91,16 +91,17 @@ class Tile:
 
 class Board:
     def __init__(self, board_size=11):
-            super().__init__()
+        super().__init__()
 
-            self._board_size = board_size
+        self._winner = None
+        self._board_size = board_size
 
-            self._tiles = []
-            for i in range(board_size):
-                new_line = []
-                for j in range(board_size):
-                    new_line.append(Tile(i, j))
-                self._tiles.append(new_line)
+        self._tiles = []
+        for i in range(board_size):
+            new_line = []
+            for j in range(board_size):
+                new_line.append(Tile(i, j))
+            self._tiles.append(new_line)
 
     def from_string(string_input, board_size=11, bnf=True):
         """Loads a board from a string representation. If bnf=True, it will
@@ -123,6 +124,23 @@ class Board:
                     b.set_tile_colour(i, j, Colour.from_char(char))
 
         return b
+
+    def get_np_rep(self, player_colour):
+        """Returns a numpy representation of the board relative to the player."""
+
+        p_colour = Colour.from_char(player_colour)
+        opp_colour = Colour.opposite(p_colour)
+
+        np_rep = np.zeros((self._board_size, self._board_size))
+        for i in range(self._board_size):
+            for j in range(self._board_size):
+                colour = self._tiles[i][j].get_colour()
+                if colour == p_colour:
+                    np_rep[i][j] = 1
+                elif colour == opp_colour:
+                    np_rep[i][j] = -1
+
+        return np_rep
 
     def has_ended(self):
         """Checks if the game has ended. It will attempt to find a red chain
@@ -151,16 +169,18 @@ class Board:
 
         return self._winner is not None
 
-    def get_np_rep(self):
+    def get_np_rep(self, player_colour):
         """Returns a numpy representation of the board."""
 
         np_rep = np.zeros((self._board_size, self._board_size))
+        p_colour = Colour.from_char(player_colour)
+
         for i in range(self._board_size):
             for j in range(self._board_size):
                 colour = self._tiles[i][j].get_colour()
-                if colour == Colour.RED:
+                if colour == p_colour:
                     np_rep[i][j] = 1
-                elif colour == Colour.BLUE:
+                elif colour == Colour.opposite(p_colour):
                     np_rep[i][j] = -1
 
         return np_rep
@@ -180,25 +200,25 @@ class Board:
         self._tiles[x][y].visit()
 
         # win conditions
-        if (colour == Colour.RED):
-            if (x == self._board_size-1):
+        if colour == Colour.RED:
+            if x == self._board_size-1:
                 self._winner = colour
-        elif (colour == Colour.BLUE):
-            if (y == self._board_size-1):
+        elif colour == Colour.BLUE:
+            if y == self._board_size-1:
                 self._winner = colour
         else:
             return
 
         # end condition
-        if (self._winner is not None):
+        if self._winner is not None:
             return
 
         # visit neighbours
         for idx in range(Tile.NEIGHBOUR_COUNT):
             x_n = x + Tile.I_DISPLACEMENTS[idx]
             y_n = y + Tile.J_DISPLACEMENTS[idx]
-            if (x_n >= 0 and x_n < self._board_size and
-                    y_n >= 0 and y_n < self._board_size):
+            if (0 <= x_n < self._board_size and
+                    0 <= y_n < self._board_size):
                 neighbour = self._tiles[x_n][y_n]
                 if (not neighbour.is_visited() and
                         neighbour.get_colour() == colour):
@@ -210,7 +230,7 @@ class Board:
         """
 
         output = ""
-        if (bnf):
+        if bnf:
             for line in self._tiles:
                 for tile in line:
                     output += Colour.get_char(tile.get_colour())
@@ -245,6 +265,5 @@ class Board:
 # print out the board
 if __name__ == "__main__":
     b = Board()
-    #print(b)
 
     print(b.print_board())
