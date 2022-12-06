@@ -1,10 +1,11 @@
 import socket
 from random import choice
 from time import sleep
-from src.Board import Board
-"""
 
-"""
+from src14.Game import Game
+from src14.Board import Board
+
+
 class AlphaZeroAgent():
     """This class describes the default Hex agent. It will randomly send a
     valid move at each turn, and it will choose to swap with a 50% chance.
@@ -19,7 +20,9 @@ class AlphaZeroAgent():
         """
         
         self._board_size = 0
-        self._board = Board(board_size=self._board_size)
+        self._board = None
+        self._game = None
+        self._curPlayer = 1
         self._colour = ""
         self._turn_count = 1
         self._choices = []
@@ -44,7 +47,6 @@ class AlphaZeroAgent():
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._s.connect((AlphaZeroAgent.HOST, AlphaZeroAgent.PORT))
 
-        print("AZ Agent: Connected to server.")
         return 2
 
     def _wait_start(self):
@@ -59,6 +61,10 @@ class AlphaZeroAgent():
                 for j in range(self._board_size):
                     self._choices.append((i, j))
             self._colour = data[2]
+            
+            self._game = Game(self._board_size)
+            self._board = self._game.getInitBoard()
+            self._curPlayer = 1
 
             if (self._colour == "R"):
                 return 3
@@ -84,20 +90,16 @@ class AlphaZeroAgent():
 
         return 4
 
-    # 
     def _wait_message(self):
         """Waits for a new change message when it is not its turn."""
 
         self._turn_count += 1
 
         data = self._s.recv(1024).decode("utf-8").strip().split(";")
-
-        # Display data from message received
-        print(f"[AZ Agent] Received message: {data}")
-        # Display board
         if (data[0] == "END" or data[-1] == "END"):
             return 5
         else:
+
             if (data[1] == "SWAP"):
                 self._colour = self.opp_colour()
             else:
@@ -106,10 +108,6 @@ class AlphaZeroAgent():
 
             if (data[-1] == self._colour):
                 return 3
-
-        if data[0] == "CHANGE":
-            self._board = Board.from_string(data[2], board_size=self._board_size)
-            print(f"[AZ Agent] Updated Board: {self._board.print_board()}")
 
         return 4
 
