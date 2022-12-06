@@ -1,9 +1,12 @@
 import socket
 from random import choice
 from time import sleep
+import numpy as np
 
 from src14.Game import Game
 from src14.Board import Board
+from src14.MCTS import MCTS
+from src14.NeuralNet import NeuralNet as NNet
 
 
 class AlphaZeroAgent():
@@ -20,12 +23,15 @@ class AlphaZeroAgent():
         """
         
         self._board_size = 0
-        self._board = None
-        self._game = None
-        self._curPlayer = 1
         self._colour = ""
         self._turn_count = 1
         self._choices = []
+        
+        self._board = None
+        self._game = None
+        self._NN = None
+        self._MCTS = None
+        self._curPlayer = 1
         
         states = {
             1: AlphaZeroAgent._connect,
@@ -64,6 +70,8 @@ class AlphaZeroAgent():
             
             self._game = Game(self._board_size)
             self._board = self._game.getInitBoard()
+            self._NN = NNet(self._game)
+            self._MCTS = MCTS(self._game, self._NN, 1)
             self._curPlayer = 1
 
             if (self._colour == "R"):
@@ -79,11 +87,17 @@ class AlphaZeroAgent():
         """Makes a random valid move. It will choose to swap with
         a coinflip.
         """
+        board = self._game.getCanonicalForm(self._board, self._curPlayer)
         
-        if (self._turn_count == 2 and choice([0, 1]) == 1):
+        action = np.argmax(self._MCTS.getActionProb(board, temp=0))
+        valids = self._game.getValidMoves(self._board, 1)
+        
+        board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
+        
+        if (action == self._game.n ** 2):
             msg = "SWAP\n"
         else:
-            move = choice(self._choices)
+            move = (int(action / self.n), action % self.n)
             msg = f"{move[0]},{move[1]}\n"
         
         self._s.sendall(bytes(msg, "utf-8"))
@@ -102,9 +116,12 @@ class AlphaZeroAgent():
 
             if (data[1] == "SWAP"):
                 self._colour = self.opp_colour()
+                action = self._game.n ** 2
             else:
                 x, y = data[1].split(",")
-                self._choices.remove((int(x), int(y)))
+                action = int(x) * self._game.n + int(y)
+                
+            self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
 
             if (data[-1] == self._colour):
                 return 3
