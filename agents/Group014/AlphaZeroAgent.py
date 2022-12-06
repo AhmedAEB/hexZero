@@ -91,7 +91,7 @@ class AlphaZeroAgent():
         """
         self._board = self._game.getCanonicalForm(self._board, self._curPlayer)
         
-        action = np.argmax(self._MCTS.getActionProb(board, temp=0))
+        action = np.argmax(self._MCTS.getActionProb(self._board, temp=0))
         valids = self._game.getValidMoves(self._board, 1)
         
         self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
