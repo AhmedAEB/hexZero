@@ -1,8 +1,8 @@
 import socket
 from random import choice
 from time import sleep
-from src.Board import Board
-from src.Game import Game
+from Board import Board
+from Game import Game
 
 """
 

@@ -1,4 +1,4 @@
-import src.Board as Board
+import Board as Board
 
 class Game:
     # Returns a blank board
