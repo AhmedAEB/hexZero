@@ -92,16 +92,15 @@ class AlphaZeroAgent():
         self._board = self._game.getCanonicalForm(self._board, self._curPlayer)
         
         action = np.argmax(self._MCTS.getActionProb(self._board, temp=0))
-        valids = self._game.getValidMoves(self._board, 1)
-        
+
         self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
-        
+
         if (action == self._board_size ** 2):
             msg = "SWAP\n"
         else:
             move = (int(action / self._board_size), action % self._board_size)
             msg = f"{move[0]},{move[1]}\n"
-        
+
         self._s.sendall(bytes(msg, "utf-8"))
 
         return 4
@@ -115,18 +114,20 @@ class AlphaZeroAgent():
         if (data[0] == "END" or data[-1] == "END"):
             return 5
         else:
-
-            if (data[1] == "SWAP"):
+            if data[1] == "SWAP":
                 self._colour = self.opp_colour()
                 action = self._board_size ** 2
+
+                if (data[-1] == self._colour):
+                    return 3
             else:
+                if (data[-1] == self._colour):
+                    return 3
+
                 x, y = data[1].split(",")
                 action = int(x) * self._board_size + int(y)
-                
-            self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
 
-            if (data[-1] == self._colour):
-                return 3
+            self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
 
         return 4
 
