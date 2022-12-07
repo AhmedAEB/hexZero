@@ -90,7 +90,7 @@ class AlphaZeroAgent():
         a coinflip.
         """
         self._board = self._game.getCanonicalForm(self._board, self._curPlayer)
-        
+
         action = np.argmax(self._MCTS.getActionProb(self._board, temp=0))
 
         self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
@@ -116,18 +116,17 @@ class AlphaZeroAgent():
         else:
             if data[1] == "SWAP":
                 self._colour = self.opp_colour()
-                action = self._board_size ** 2
 
-                if (data[-1] == self._colour):
+                if data[-1] == self._colour:
                     return 3
             else:
-                if (data[-1] == self._colour):
+                if data[-1] == self._colour:
                     return 3
 
                 x, y = data[1].split(",")
                 action = int(x) * self._board_size + int(y)
 
-            self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
+                self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
 
         return 4
 
