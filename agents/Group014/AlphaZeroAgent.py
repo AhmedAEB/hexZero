@@ -99,6 +99,11 @@ class AlphaZeroAgent():
         else:
             move = choice(self._choices)
             msg = f"{move[0]},{move[1]}\n"
+            # Output move
+            print("Move", move)
+
+        # Output board
+        print("Board", self._board)
 
         self._s.sendall(bytes(msg, "utf-8"))
 
@@ -114,6 +119,7 @@ class AlphaZeroAgent():
         else:
             if (data[1] == "SWAP"):
                 self._colour = self.opp_colour()
+                action = self._board_size ** 2
             else:
                 x, y = data[1].split(",")
                 action = int(x) * self._board_size + int(y)
@@ -122,7 +128,7 @@ class AlphaZeroAgent():
 
             if (data[-1] == self._colour):
                 return 3
-        
+
         return 4
 
     def _close(self):
