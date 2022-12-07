@@ -95,15 +95,9 @@ class AlphaZeroAgent():
         if action == self._board_size ** 2:
             msg = "SWAP\n"
         else:
-            move = choice(self._choices)
+            move = action // self._board_size, action % self._board_size
             msg = f"{move[0]},{move[1]}\n"
-            # Output move
-            print("Move", move)
 
-        # Output board
-        print("Board", self._board)
-
-        self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
         self._s.sendall(bytes(msg, "utf-8"))
 
         return 4
@@ -112,24 +106,21 @@ class AlphaZeroAgent():
         """Waits for a new change message when it is not its turn."""
 
         data = self._s.recv(1024).decode("utf-8").strip().split(";")
-        # Print transmission
-        print("Received", self._s.recv(1024).decode("utf-8").strip().split(";"))
-
+        
         if (data[0] == "END" or data[-1] == "END"):
             return 5
         else:
             if (data[1] == "SWAP"):
                 self._colour = self.opp_colour()
-                action = self._board_size ** 2
             else:
                 x, y = data[1].split(",")
                 action = int(x) * self._board_size + int(y)
-
             self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
-
             if (data[-1] == self._colour):
+                #print(data, self._board)
                 return 3
 
+        #print(data, self._board)
         return 4
 
     def _close(self):
