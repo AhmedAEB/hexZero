@@ -74,11 +74,13 @@ class AlphaZeroAgent():
             self._board = self._game.getInitBoard()
             self._NN = NNet(self._game)
             self._MCTS = MCTS(self._game, self._NN, self._args)
-            self._curPlayer = 1
+
 
             if (self._colour == "R"):
+                self._curPlayer = 1
                 return 3
             else:
+                self._curPlayer = -1
                 return 4
 
         else:
