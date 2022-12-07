@@ -113,6 +113,8 @@ class AlphaZeroAgent():
         """Waits for a new change message when it is not its turn."""
 
         data = self._s.recv(1024).decode("utf-8").strip().split(";")
+        # Print transmission
+        print("Received", self._s.recv(1024).decode("utf-8").strip().split(";"))
 
         if (data[0] == "END" or data[-1] == "END"):
             return 5
