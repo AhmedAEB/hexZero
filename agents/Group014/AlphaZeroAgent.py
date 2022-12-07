@@ -104,7 +104,8 @@ class AlphaZeroAgent():
 
         # Output board
         print("Board", self._board)
-
+        
+        self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
         self._s.sendall(bytes(msg, "utf-8"))
 
         return 4
