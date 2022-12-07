@@ -89,21 +89,6 @@ class AlphaZeroAgent():
         """Makes a random valid move. It will choose to swap with
         a coinflip.
         """
-        # self._board = self._game.getCanonicalForm(self._board, self._curPlayer)
-        #
-        # action = np.argmax(self._MCTS.getActionProb(self._board, temp=0))
-        #
-        # self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
-        #
-        # if (action == self._board_size ** 2):
-        #     msg = "SWAP\n"
-        # else:
-        #     move = (int(action / self._board_size), action % self._board_size)
-        #     msg = f"{move[0]},{move[1]}\n"
-        #
-        # self._s.sendall(bytes(msg, "utf-8"))
-        #
-        # return 4
         self._board = self._game.getCanonicalForm(self._board, self._curPlayer)
         action = np.argmax(self._MCTS.getActionProb(self._board, temp=0))
 
@@ -119,28 +104,6 @@ class AlphaZeroAgent():
 
     def _wait_message(self):
         """Waits for a new change message when it is not its turn."""
-
-        # self._turn_count += 1
-        #
-        # data = self._s.recv(1024).decode("utf-8").strip().split(";")
-        # if (data[0] == "END" or data[-1] == "END"):
-        #     return 5
-        # else:
-        #     if data[1] == "SWAP":
-        #         self._colour = self.opp_colour()
-        #
-        #         if data[-1] == self._colour:
-        #             return 3
-        #     else:
-        #         if data[-1] == self._colour:
-        #             return 3
-        #
-        #         x, y = data[1].split(",")
-        #         action = int(x) * self._board_size + int(y)
-        #
-        #         self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
-        #
-        # return 4
 
         data = self._s.recv(1024).decode("utf-8").strip().split(";")
 
