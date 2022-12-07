@@ -118,11 +118,11 @@ class AlphaZeroAgent():
                 x, y = data[1].split(",")
                 action = int(x) * self._board_size + int(y)
 
+            self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
+
             if (data[-1] == self._colour):
                 return 3
-
-        self._board, self._curPlayer = self._game.getNextState(self._board, self._curPlayer, action)
-
+        
         return 4
 
     def _close(self):
